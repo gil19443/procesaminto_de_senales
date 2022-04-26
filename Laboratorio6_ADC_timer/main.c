@@ -175,7 +175,7 @@ InitConsole(void)
 int
 main(void)
 {
-    uint16_t freq_muestreo = 250;    // En Hz
+    uint16_t freq_muestreo = 100;    // En Hz
 
     // Set the clocking to run at 80 MHz (200 MHz / 2.5) using the PLL.  When
     // using the ADC, you must either use the PLL or supply a 16 MHz clock source.

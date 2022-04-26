@@ -1,7 +1,7 @@
 ******************************************************************************
                   TI ARM Linker PC v20.2.5                     
 ******************************************************************************
->> Linked Tue Feb 22 17:44:28 2022
+>> Linked Tue Mar 15 17:03:41 2022
 
 OUTPUT FILE NAME:   <Laboratorio6_ADC_timer.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00000f4d
