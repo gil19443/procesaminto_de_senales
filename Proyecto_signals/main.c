@@ -37,6 +37,8 @@ float y1 = 0;
 float y2 = 0;
 int caso = 0;
 char rec=0;
+char filtro[6];
+int n=0;
 //*****************************************************************************
 // Definiciones para configuración del SPI y variable global
 //*****************************************************************************
@@ -144,8 +146,14 @@ void UARTIntHandler(void){
         //
         //UARTCharPutNonBlocking(UART0_BASE, UARTCharGetNonBlocking(UART0_BASE));
         rec = UARTCharGetNonBlocking(UART0_BASE);
+        if ((int)rec!=10){
+            filtro[n] = rec;
+            n++;
+        }else{
+            n = 0;
+        }
         UARTCharPutNonBlocking(UART0_BASE, rec);
-        UARTprintf(rec);
+        UARTprintf("%d\n",(int)rec);
 
         //
         // Blink the LED to show a character transfer is occurring.
