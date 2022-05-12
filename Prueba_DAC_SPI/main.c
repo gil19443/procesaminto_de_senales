@@ -159,45 +159,26 @@ void UARTIntHandler(void)
 
     }
 }
-//*****************************************************************************
-// Send a string to the UART.
-//*****************************************************************************
-void UARTSend(const uint8_t *pui8Buffer, uint32_t ui32Count)
-{
-    //
-    // Loop while there are more characters to send.
-    //
-    while(ui32Count--)
-    {
-        //
-        // Write the next character to the UART.
-        //
-        UARTCharPutNonBlocking(UART0_BASE, *pui8Buffer++);
-    }
-}
+
 //*****************************************************************************
 // configuracion para usar el UART0
 //*****************************************************************************
 void InitConsole(void) {
-    //
-    // Enable lazy stacking for interrupt handlers.  This allows floating-point
-    // instructions to be used within interrupt handlers, but at the expense of
-    // extra stack usage.
-    //
-    FPUEnable();
-    FPULazyStackingEnable();
+
     // Enable GPIO port A which is used for UART0 pins.
     // TODO: change this to whichever GPIO port you are using.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    // Enable UART0 so that we can configure the clock.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
 
+    IntMasterEnable();
     // Configure the pin muxing for UART0 functions on port A0 and A1.
     // This step is not necessary if your part does not support pin muxing.
     // TODO: change this to select the port/pin you are using.
     GPIOPinConfigure(GPIO_PA0_U0RX);
     GPIOPinConfigure(GPIO_PA1_U0TX);
 
-    // Enable UART0 so that we can configure the clock.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+
 
     // Use the internal 16MHz oscillator as the UART clock source.
     UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC);
@@ -218,12 +199,6 @@ void InitConsole(void) {
     //
     IntEnable(INT_UART0);   // INT_UART0 se vuelve INT_UART0_TM4C123
     UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
-
-    //
-    // Prompt for text to be entered.
-    //
-    UARTSend((uint8_t *)"\nEnter text: ", 14);
-
 }
 //*****************************************************************************
 // configuracion para usar el ADC0
@@ -398,9 +373,6 @@ main(void)
     InitSPI(); //configuracion del SPI
 
 //******************Configuraciones generales**********************************
-    // Enable processor interrupts.
-    IntMasterEnable();
-
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);//habilita el puerto F
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2|GPIO_PIN_3);//Pines de salida para los leds
     GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
