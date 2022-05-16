@@ -39,6 +39,7 @@ int caso = 0;
 char rec=0;
 char filtro[20];
 int n=0;
+int data = 0;
 //*****************************************************************************
 // Definiciones para configuración del SPI y variable global
 //*****************************************************************************
@@ -150,8 +151,9 @@ void UARTIntHandler(void){
         UARTCharPutNonBlocking(UART0_BASE, rec);
         */
 
-        UARTgets(filtro,20);
-        for(n=0;n<21;n++){
+        data = UARTgets(filtro,21);
+        UARTprintf("%d\n",data);
+        for(n=0;n<20;n++){
             UARTCharPutNonBlocking(UART0_BASE, filtro[n]);
         }
 
