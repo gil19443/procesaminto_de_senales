@@ -89,8 +89,8 @@ void Timer0IntHandler(void) {
     y2_n_1 = y2;
     x2_n_1 = pui32ADC0Value[0];
     //************************************************************************
-    /*
-    switch((int)rec-48){ //switch para intercambiar entre H1 y H2
+
+    switch((int)filtro[19]-48){ //switch para intercambiar entre H1 y H2
         case 0: //Formato para que se vean ambas señales en el serial plotter
             UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y1);
             break;
@@ -98,9 +98,9 @@ void Timer0IntHandler(void) {
             UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y2);
             break;
         default:
-            UARTprintf("%d\n",(int)rec);
+            UARTprintf("%d\n",(int)(int)filtro[19]);
     }
-    */
+
     // Display the AIN0 (PE3) digital value on the console.
     //*****************************DAC*********************************************
     // Se pudo crear una fución para el envío al DAC (ej. DAC_write)
@@ -173,8 +173,8 @@ void UARTIntHandler(void){
         GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
 
     }
-    UARTprintf("%d\n",data);
-    UARTprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9],filtro[10],filtro[11],filtro[12],filtro[13],filtro[14],filtro[15],filtro[16],filtro[17],filtro[18],filtro[19]);
+    //UARTprintf("%d\n",data);
+    //UARTprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9],filtro[10],filtro[11],filtro[12],filtro[13],filtro[14],filtro[15],filtro[16],filtro[17],filtro[18],filtro[19]);
 
 }
 //*****************************************************************************
