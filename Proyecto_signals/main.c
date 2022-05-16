@@ -37,7 +37,7 @@ float y1 = 0;
 float y2 = 0;
 int caso = 0;
 char rec=0;
-char filtro[6];
+char filtro[20];
 int n=0;
 //*****************************************************************************
 // Definiciones para configuración del SPI y variable global
@@ -88,7 +88,7 @@ void Timer0IntHandler(void) {
     y2_n_1 = y2;
     x2_n_1 = pui32ADC0Value[0];
     //************************************************************************
-
+    /*
     switch((int)rec-48){ //switch para intercambiar entre H1 y H2
         case 0: //Formato para que se vean ambas señales en el serial plotter
             UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y1);
@@ -99,7 +99,7 @@ void Timer0IntHandler(void) {
         default:
             UARTprintf("%d\n",(int)rec);
     }
-
+    */
     // Display the AIN0 (PE3) digital value on the console.
     //*****************************DAC*********************************************
     // Se pudo crear una fución para el envío al DAC (ej. DAC_write)
@@ -145,15 +145,15 @@ void UARTIntHandler(void){
         // Read the next character from the UART and write it back to the UART.
         //
         //UARTCharPutNonBlocking(UART0_BASE, UARTCharGetNonBlocking(UART0_BASE));
+        /*
         rec = UARTCharGetNonBlocking(UART0_BASE);
-        if ((int)rec!=10){
-            filtro[n] = rec;
-            n++;
-        }else{
-            n = 0;
-        }
         UARTCharPutNonBlocking(UART0_BASE, rec);
-        UARTprintf("%d\n",(int)rec);
+        */
+
+        UARTgets(filtro,20);
+        for(n=0;n<21;n++){
+            UARTCharPutNonBlocking(UART0_BASE, filtro[n]);
+        }
 
         //
         // Blink the LED to show a character transfer is occurring.
