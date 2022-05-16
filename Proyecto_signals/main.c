@@ -153,10 +153,12 @@ void UARTIntHandler(void){
 
         data = UARTgets(filtro,21);
         UARTprintf("%d\n",data);
+        UARTprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9],filtro[10],filtro[11],filtro[12],filtro[13],filtro[14],filtro[15],filtro[16],filtro[17],filtro[18],filtro[19]);
+       /*
         for(n=0;n<20;n++){
             UARTCharPutNonBlocking(UART0_BASE, filtro[n]);
         }
-
+        */
         //
         // Blink the LED to show a character transfer is occurring.
         //
