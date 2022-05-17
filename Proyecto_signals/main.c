@@ -38,9 +38,11 @@ float x2_n_1 = 0;
 float y1 = 0;
 float y2 = 0;
 int caso = 0;
+int freq =0;
 char rec=0;
-char buffer[20];
+char buffer[75];
 float filtro[10];
+float prueba = 0;
 int n=0;
 int data = 0;
 char* toks;
@@ -80,10 +82,15 @@ void Timer0IntHandler(void) {
 
     // Clear the ADC interrupt flag.
     ADCIntClear(ADC0_BASE, 3);
-
     // Read ADC Value.
     ADCSequenceDataGet(ADC0_BASE, 3, pui32ADC0Value);
-
+    /*
+    freq++;
+    if ((int)filtro[9] > freq){
+        freq = 0;
+        UARTprintf("1\n");
+}
+    UARTprintf("0\n");*/
     // implementacion para H1
     y1 = 0.1*pui32ADC0Value[0] + 0.9*y1_n_1;
     y1_n_1 = y1;
@@ -93,18 +100,18 @@ void Timer0IntHandler(void) {
     y2_n_1 = y2;
     x2_n_1 = pui32ADC0Value[0];
     //************************************************************************
-
-    switch((int)filtro[9]){ //switch para intercambiar entre H1 y H2
+/*
+    switch((int)filtro[8]){ //switch para intercambiar entre H1 y H2
         case 0: //Formato para que se vean ambas señales en el serial plotter
-            UARTprintf("%d\n", pui32ADC0Value[0],(int)y1);
+            UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y1);
             break;
         case 1:
-            UARTprintf("%d\n", pui32ADC0Value[0],(int)y2);
+            UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y2);
             break;
         default:
             UARTprintf("%d\n",(int)filtro[9]);
     }
-
+*/
     // Display the AIN0 (PE3) digital value on the console.
     //*****************************DAC*********************************************
     // Se pudo crear una fución para el envío al DAC (ej. DAC_write)
@@ -155,7 +162,7 @@ void UARTIntHandler(void){
         UARTCharPutNonBlocking(UART0_BASE, rec);
         */
 
-        data = UARTgets(buffer,20);
+        data = UARTgets(buffer,75);
         /*
         for(n=0;n<20;n++){
             UARTCharPutNonBlocking(UART0_BASE, filtro[n]);
@@ -177,29 +184,30 @@ void UARTIntHandler(void){
         GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
 
     }
-    //UARTprintf("%d\n",data);
+    UARTprintf("%d\n",data);
     //UARTprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9],filtro[10],filtro[11],filtro[12],filtro[13],filtro[14],filtro[15],filtro[16],filtro[17],filtro[18],filtro[19]);
     toks = strtok(buffer, ","); //se separa el string recibido
     filtro[0] = atof(toks);
     toks = strtok(NULL, ",");
     filtro[1] = atof(toks);
-    toks = strtok(NULL, ".");
+    toks = strtok(NULL, ",");
     filtro[2] = atof(toks);
     toks = strtok(NULL, ",");
     filtro[3] = atof(toks);
-    toks = strtok(NULL, ".");
+    toks = strtok(NULL, ",");
     filtro[4] = atof(toks);
     toks = strtok(NULL, ",");
     filtro[5] = atof(toks);
-    toks = strtok(NULL, ".");
+    toks = strtok(NULL, ",");
     filtro[6] = atof(toks);
     toks = strtok(NULL, ",");
     filtro[7] = atof(toks);
-    toks = strtok(NULL, ".");
+    toks = strtok(NULL, ",");
     filtro[8] = atof(toks);
     toks = strtok(NULL, ",");
     filtro[9] = atof(toks);
-    UARTprintf("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9]);
+    UARTprintf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",(int)filtro[0],(int)filtro[1],(int)filtro[2],(int)filtro[3],(int)filtro[4],(int)filtro[5],(int)filtro[6],(int)filtro[7],(int)filtro[8],(int)filtro[9]);
+    //UARTprintf("%d\n",(int)filtro[0]);
 }
 //*****************************************************************************
 // This function sets up UART0
