@@ -112,6 +112,9 @@ void Timer0IntHandler(void) {
             UARTprintf("%d\n",(int)filtro[9]);
     }
 */
+    if ((int)filtro[8]==1){
+        UARTprintf("%d\n",pui32ADC0Value[0]);
+    }
     // Display the AIN0 (PE3) digital value on the console.
     //*****************************DAC*********************************************
     // Se pudo crear una fución para el envío al DAC (ej. DAC_write)
