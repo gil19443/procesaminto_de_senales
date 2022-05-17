@@ -11,6 +11,8 @@
 //*****************************************************************************
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
 #include "inc/hw_types.h"
@@ -37,9 +39,11 @@ float y1 = 0;
 float y2 = 0;
 int caso = 0;
 char rec=0;
-char filtro[20];
+char buffer[20];
+float filtro[10];
 int n=0;
 int data = 0;
+char* toks;
 //*****************************************************************************
 // Definiciones para configuración del SPI y variable global
 //*****************************************************************************
@@ -90,15 +94,15 @@ void Timer0IntHandler(void) {
     x2_n_1 = pui32ADC0Value[0];
     //************************************************************************
 
-    switch((int)filtro[19]-48){ //switch para intercambiar entre H1 y H2
+    switch((int)filtro[9]){ //switch para intercambiar entre H1 y H2
         case 0: //Formato para que se vean ambas señales en el serial plotter
-            UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y1);
+            UARTprintf("%d\n", pui32ADC0Value[0],(int)y1);
             break;
         case 1:
-            UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y2);
+            UARTprintf("%d\n", pui32ADC0Value[0],(int)y2);
             break;
         default:
-            UARTprintf("%d\n",(int)(int)filtro[19]);
+            UARTprintf("%d\n",(int)filtro[9]);
     }
 
     // Display the AIN0 (PE3) digital value on the console.
@@ -151,7 +155,7 @@ void UARTIntHandler(void){
         UARTCharPutNonBlocking(UART0_BASE, rec);
         */
 
-        data = UARTgets(filtro,21);
+        data = UARTgets(buffer,20);
         /*
         for(n=0;n<20;n++){
             UARTCharPutNonBlocking(UART0_BASE, filtro[n]);
@@ -175,7 +179,27 @@ void UARTIntHandler(void){
     }
     //UARTprintf("%d\n",data);
     //UARTprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9],filtro[10],filtro[11],filtro[12],filtro[13],filtro[14],filtro[15],filtro[16],filtro[17],filtro[18],filtro[19]);
-
+    toks = strtok(buffer, ","); //se separa el string recibido
+    filtro[0] = atof(toks);
+    toks = strtok(NULL, ",");
+    filtro[1] = atof(toks);
+    toks = strtok(NULL, ".");
+    filtro[2] = atof(toks);
+    toks = strtok(NULL, ",");
+    filtro[3] = atof(toks);
+    toks = strtok(NULL, ".");
+    filtro[4] = atof(toks);
+    toks = strtok(NULL, ",");
+    filtro[5] = atof(toks);
+    toks = strtok(NULL, ".");
+    filtro[6] = atof(toks);
+    toks = strtok(NULL, ",");
+    filtro[7] = atof(toks);
+    toks = strtok(NULL, ".");
+    filtro[8] = atof(toks);
+    toks = strtok(NULL, ",");
+    filtro[9] = atof(toks);
+    UARTprintf("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",filtro[0],filtro[1],filtro[2],filtro[3],filtro[4],filtro[5],filtro[6],filtro[7],filtro[8],filtro[9]);
 }
 //*****************************************************************************
 // This function sets up UART0
