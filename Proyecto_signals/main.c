@@ -71,26 +71,42 @@ void Timer0IntHandler(void) {
 
     // Clear the timer interrupt. Necesario para lanzar la próxima interrupción.
     TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    switch((int)filtro[8]){
+    case 0:
+        freq=0;
+        ADCProcessorTrigger(ADC0_BASE, 3);
+       // Wait for conversion to be completed.
+       while(!ADCIntStatus(ADC0_BASE, 3, false))
+       {
+       }
 
-    // Trigger the ADC conversion.
-    ADCProcessorTrigger(ADC0_BASE, 3);
+       // Clear the ADC interrupt flag.
+       ADCIntClear(ADC0_BASE, 3);
 
-    // Wait for conversion to be completed.
-    while(!ADCIntStatus(ADC0_BASE, 3, false))
-    {
+       // Read ADC Value.
+       ADCSequenceDataGet(ADC0_BASE, 3, pui32ADC0Value);
+        break;
+    case 1:
+        freq++;
+        if ((int)filtro[9] == freq){
+        freq = 0;
+        // Trigger the ADC conversion.
+           ADCProcessorTrigger(ADC0_BASE, 3);
+
+           // Wait for conversion to be completed.
+           while(!ADCIntStatus(ADC0_BASE, 3, false))
+           {
+           }
+
+           // Clear the ADC interrupt flag.
+           ADCIntClear(ADC0_BASE, 3);
+
+           // Read ADC Value.
+           ADCSequenceDataGet(ADC0_BASE, 3, pui32ADC0Value);
+        }
+        break;
     }
 
-    // Clear the ADC interrupt flag.
-    ADCIntClear(ADC0_BASE, 3);
-    // Read ADC Value.
-    ADCSequenceDataGet(ADC0_BASE, 3, pui32ADC0Value);
-    /*
-    freq++;
-    if ((int)filtro[9] > freq){
-        freq = 0;
-        UARTprintf("1\n");
-}
-    UARTprintf("0\n");*/
     // implementacion para H1
     y1 = 0.1*pui32ADC0Value[0] + 0.9*y1_n_1;
     y1_n_1 = y1;
@@ -100,8 +116,8 @@ void Timer0IntHandler(void) {
     y2_n_1 = y2;
     x2_n_1 = pui32ADC0Value[0];
     //************************************************************************
-/*
-    switch((int)filtro[8]){ //switch para intercambiar entre H1 y H2
+
+    switch((int)filtro[7]){ //switch para intercambiar entre H1 y H2
         case 0: //Formato para que se vean ambas señales en el serial plotter
             UARTprintf("%d,%d\n", pui32ADC0Value[0],(int)y1);
             break;
@@ -111,10 +127,11 @@ void Timer0IntHandler(void) {
         default:
             UARTprintf("%d\n",(int)filtro[9]);
     }
-*/
+/*
     if ((int)filtro[8]==1){
         UARTprintf("%d\n",pui32ADC0Value[0]);
     }
+    */
     // Display the AIN0 (PE3) digital value on the console.
     //*****************************DAC*********************************************
     // Se pudo crear una fución para el envío al DAC (ej. DAC_write)
@@ -209,7 +226,7 @@ void UARTIntHandler(void){
     filtro[8] = atof(toks);
     toks = strtok(NULL, ",");
     filtro[9] = atof(toks);
-    UARTprintf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",(int)filtro[0],(int)filtro[1],(int)filtro[2],(int)filtro[3],(int)filtro[4],(int)filtro[5],(int)filtro[6],(int)filtro[7],(int)filtro[8],(int)filtro[9]);
+    //UARTprintf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",(int)filtro[0],(int)filtro[1],(int)filtro[2],(int)filtro[3],(int)filtro[4],(int)filtro[5],(int)filtro[6],(int)filtro[7],(int)filtro[8],(int)filtro[9]);
     //UARTprintf("%d\n",(int)filtro[0]);
 }
 //*****************************************************************************
